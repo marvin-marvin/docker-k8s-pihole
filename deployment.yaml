@@ -43,11 +43,13 @@ spec:
           value: Berlin/Europe
         - name: ServerIP
           value: 192.168.1.100
-        volumeMounts:
-        - mountPath: /etc/pihole
-          name: k8s-cfg-pihole
-        - mountPath: /etc/dnsmasq.d
-          name: k8s-cfg-pihole
+        - name: WEBPASSWORD
+          value: test123
+#        volumeMounts:
+#        - mountPath: /etc/pihole
+#          name: k8s-cfg-pihole
+#        - mountPath: /etc/dnsmasq.d
+#          name: k8s-cfg-pihole
         image: pihole/pihole
         imagePullPolicy: Always
         name: pihole
@@ -74,16 +76,16 @@ spec:
           privileged: false
           procMount: Default
       dnsPolicy: ClusterFirst
-      hostNetwork: true
+      hostNetwork: false
       restartPolicy: Always
       nodeSelector:
         location: lan
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
-      volumes:
-      - name: k8s-cfg-pihole
-        hostPath:
-          path: /root/k8s-cfg/pihole
-          type: Directory
+#      volumes:
+#      - name: k8s-cfg-pihole
+#        hostPath:
+#          path: /root/k8s-cfg/pihole
+#          type: Directory
 status: {}
