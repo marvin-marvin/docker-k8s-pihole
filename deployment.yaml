@@ -13,7 +13,7 @@ metadata:
   selfLink: /apis/extensions/v1beta1/namespaces/lan/deployments/pihole
 spec:
   progressDeadlineSeconds: 600
-  replicas: 3
+  replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -44,9 +44,9 @@ spec:
 #          value: test123
         volumeMounts:
         - mountPath: /etc/pihole
-          name: k8s-cfg-pihole
+          name: k8s-cfg-pihole-pihole
         - mountPath: /etc/dnsmasq.d
-          name: k8s-cfg-pihole
+          name: k8s-cfg-pihole-dnsmasq
         image: pihole/pihole
         imagePullPolicy: Always
         name: pihole
@@ -81,9 +81,13 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
-      - name: k8s-cfg-pihole
+      - name: k8s-cfg-pihole-pihole
         hostPath:
-          path: /root/k8s-cfg/pihole
+          path: /root/k8s-cfg/pihole/pihole
+          type: Directory
+      - name: k8s-cfg-pihole-dnsmasq
+        hostPath:
+          path: /root/k8s-cfg/pihole/dnsmasq
           type: Directory
 status: {}
 
