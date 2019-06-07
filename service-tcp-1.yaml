@@ -5,8 +5,8 @@ metadata:
     metallb.universe.tf/address-pool: lan-loadbalancer
     metallb.universe.tf/allow-shared-ip: pihole-svc
   labels:
-    app: pihole
-  name: pihole-tcp
+    k8s-app: pihole
+  name: pihole-tcp-1
   namespace: lan
 spec:
   externalTrafficPolicy: Local
@@ -25,6 +25,6 @@ spec:
     protocol: TCP
     targetPort: dns
   selector:
-    app: pihole
+    k8s-app: pihole
   sessionAffinity: None
   type: LoadBalancer

@@ -13,7 +13,7 @@ metadata:
   selfLink: /apis/extensions/v1beta1/namespaces/lan/deployments/pihole
 spec:
   progressDeadlineSeconds: 600
-  replicas: 1
+  replicas: 6
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -38,10 +38,6 @@ spec:
       - env:
         - name: TZ
           value: Berlin/Europe
-#        - name: ServerIP
-#          value: 192.168.1.100
-#        - name: WEBPASSWORD
-#          value: test123
         volumeMounts:
         - mountPath: /etc/pihole
           name: k8s-cfg-pihole-pihole
@@ -60,12 +56,6 @@ spec:
         - containerPort: 53
           name: dns-udp
           protocol: UDP
-#        - containerPort: 443
-#          name: pihole-ssl
-#          protocol: TCP
-#        - containerPort: 67
-#          name: client-udp
-#          protocol: UDP
         resources: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
@@ -75,8 +65,8 @@ spec:
       dnsPolicy: ClusterFirst
       hostNetwork: false
       restartPolicy: Always
-      nodeSelector:
-        location: lan
+#      nodeSelector:
+#        location: lan
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
@@ -90,30 +80,25 @@ spec:
           path: /root/k8s-cfg/pihole/dnsmasq
           type: Directory
 status: {}
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   annotations:
     metallb.universe.tf/address-pool: lan-loadbalancer
-    metallb.universe.tf/allow-shared-ip: pihole-svc
+    metallb.universe.tf/allow-shared-ip: lan-loadbalancer
   labels:
     k8s-app: pihole
-  name: pihole-tcp-1
+  name: pihole-tcp-100
   namespace: lan
 spec:
-  externalTrafficPolicy: Local
+  externalTrafficPolicy: Cluster
   loadBalancerIP: 192.168.1.100
   ports:
   - name: pihole-http
     port: 80
     protocol: TCP
     targetPort: pihole-http
-#  - name: pihole-https
-#    port: 443
-#    protocol: TCP
-#    targetPort: pihole-https
   - name: dns
     port: 53
     protocol: TCP
@@ -122,58 +107,48 @@ spec:
     k8s-app: pihole
   sessionAffinity: None
   type: LoadBalancer
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   annotations:
     metallb.universe.tf/address-pool: lan-loadbalancer
-    metallb.universe.tf/allow-shared-ip: pihole-svc
+    metallb.universe.tf/allow-shared-ip: lan-loadbalancer
   labels:
     k8s-app: pihole
-  name: pihole-udp-1
+  name: pihole-udp-100
   namespace: lan
 spec:
-  externalTrafficPolicy: Local
+  externalTrafficPolicy: Cluster
   loadBalancerIP: 192.168.1.100
   ports:
   - name: dns-udp
     port: 53
     protocol: UDP
     targetPort: dns-udp
-#  - name: client-udp
-#    port: 67
-#    protocol: UDP
-#    targetPort: client-udp
   selector:
     k8s-app: pihole
   sessionAffinity: None
   type: LoadBalancer
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   annotations:
     metallb.universe.tf/address-pool: lan-loadbalancer
-    metallb.universe.tf/allow-shared-ip: pihole-svc
+    metallb.universe.tf/allow-shared-ip: lan-loadbalancer
   labels:
     k8s-app: pihole
-  name: pihole-tcp-2
+  name: pihole-tcp-250
   namespace: lan
 spec:
-  externalTrafficPolicy: Local
+  externalTrafficPolicy: Cluster
   loadBalancerIP: 192.168.1.250
   ports:
   - name: pihole-http
     port: 80
     protocol: TCP
     targetPort: pihole-http
-#  - name: pihole-https
-#    port: 443
-#    protocol: TCP
-#    targetPort: pihole-https
   - name: dns
     port: 53
     protocol: TCP
@@ -182,30 +157,25 @@ spec:
     k8s-app: pihole
   sessionAffinity: None
   type: LoadBalancer
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   annotations:
     metallb.universe.tf/address-pool: lan-loadbalancer
-    metallb.universe.tf/allow-shared-ip: pihole-svc
+    metallb.universe.tf/allow-shared-ip: lan-loadbalancer
   labels:
     k8s-app: pihole
-  name: pihole-udp-2
+  name: pihole-udp-250
   namespace: lan
 spec:
-  externalTrafficPolicy: Local
+  externalTrafficPolicy: Cluster
   loadBalancerIP: 192.168.1.250
   ports:
   - name: dns-udp
     port: 53
     protocol: UDP
     targetPort: dns-udp
-#  - name: client-udp
-#    port: 67
-#    protocol: UDP
-#    targetPort: client-udp
   selector:
     k8s-app: pihole
   sessionAffinity: None
