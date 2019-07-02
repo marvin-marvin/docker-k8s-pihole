@@ -1,0 +1,20 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: pihole
+spec:
+  schedule: "* * * * *"
+  concurrencyPolicy: Allow
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            k8s-app: pihole
+        spec:
+          containers:
+          - name: pihole
+            image: pihole/pihole
+            imagePullPolicy: Always
+            command: ["reboot"]
+          restartPolicy: OnFailure
