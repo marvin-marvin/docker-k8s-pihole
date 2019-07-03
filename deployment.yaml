@@ -13,7 +13,7 @@ metadata:
   selfLink: /apis/extensions/v1beta1/namespaces/lan/deployments/pihole
 spec:
   progressDeadlineSeconds: 600
-  replicas: 6
+  replicas: 5
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -47,8 +47,7 @@ spec:
           name: k8s-cfg-pihole-pihole
         - mountPath: /etc/dnsmasq.d
           name: k8s-cfg-pihole-dnsmasq
-          readOnly: true
-        image: pihole/pihole:latest
+        image: pihole/pihole
         imagePullPolicy: Always
         name: pihole
         ports:
