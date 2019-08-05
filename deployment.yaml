@@ -39,9 +39,9 @@ spec:
         - name: TZ
           value: Berlin/Europe
         - name: DNS1
-          value: 185.135.8.197
-        - name: DNS2
           value: 54.93.169.181
+        - name: DNS2
+          value: 172.104.135.61
         volumeMounts:
         - mountPath: /etc/pihole
           name: k8s-cfg-pihole-pihole
