@@ -96,7 +96,7 @@ metadata:
   name: pihole-tcp-100
   namespace: lan
 spec:
-  externalTrafficPolicy: Cluster
+  externalTrafficPolicy: Local
   loadBalancerIP: 192.168.1.100
   ports:
   - name: pihole-http
@@ -123,7 +123,7 @@ metadata:
   name: pihole-udp-100
   namespace: lan
 spec:
-  externalTrafficPolicy: Cluster
+  externalTrafficPolicy: Local
   loadBalancerIP: 192.168.1.100
   ports:
   - name: dns-udp
