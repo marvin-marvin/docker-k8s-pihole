@@ -13,7 +13,7 @@ metadata:
   selfLink: /apis/extensions/v1beta1/namespaces/lan/deployments/pihole
 spec:
   progressDeadlineSeconds: 600
-  replicas: 1
+  replicas: 5
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -69,8 +69,8 @@ spec:
       dnsPolicy: ClusterFirst
       hostNetwork: false
       restartPolicy: Always
-      nodeSelector:
-        location: lan
+#      nodeSelector:
+#        location: lan
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
@@ -125,6 +125,56 @@ metadata:
 spec:
   externalTrafficPolicy: Cluster
   loadBalancerIP: 192.168.1.100
+  ports:
+  - name: dns-udp
+    port: 53
+    protocol: UDP
+    targetPort: dns-udp
+  selector:
+    k8s-app: pihole
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    metallb.universe.tf/address-pool: lan-loadbalancer
+    metallb.universe.tf/allow-shared-ip: lan-loadbalancer
+  labels:
+    k8s-app: pihole
+  name: pihole-tcp-250
+  namespace: lan
+spec:
+  externalTrafficPolicy: Cluster
+  loadBalancerIP: 192.168.1.250
+  ports:
+  - name: pihole-http
+    port: 80
+    protocol: TCP
+    targetPort: pihole-http
+  - name: dns
+    port: 53
+    protocol: TCP
+    targetPort: dns
+  selector:
+    k8s-app: pihole
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    metallb.universe.tf/address-pool: lan-loadbalancer
+    metallb.universe.tf/allow-shared-ip: lan-loadbalancer
+  labels:
+    k8s-app: pihole
+  name: pihole-udp-250
+  namespace: lan
+spec:
+  externalTrafficPolicy: Cluster
+  loadBalancerIP: 192.168.1.250
   ports:
   - name: dns-udp
     port: 53
